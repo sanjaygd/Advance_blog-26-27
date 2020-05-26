@@ -1,0 +1,53 @@
+{% extends 'blog_app/base.html' %}
+{% load urlify %}
+{% load crispy_forms_tags %}
+{% block head_title %}
+{{obj_details.title}} | {{block.super}}
+{% endblock head_title %}
+
+{% block content %}
+
+
+<div class="col-md-7 offset-md-3">
+    <blockquote class="blockquote">
+        <p class="mb-0 ml-2"><small>{{comment.content}}</small></p>
+
+        <footer class="blockquote-footer">via {{comment.user}} |
+            {{comment.timestamp|timesince}} ago |{% if comment.children.count > 0 %} {{ comment.children.count }}
+            Comment{% if comment.children.count > 1 %}s{% endif %} | {% endif %}{% if request.user == comment.user %} |<a href="{{comment.get_delete_url}}">
+            Delete</a> {% endif %} </footer>
+    </blockquote>
+    <hr>
+
+
+    <div>
+        {% for child_comment in comment.children %}
+        <div class="ml-4">
+            <blockquote class="blockquote">
+                <p class="mb-0"><small>{{child_comment.content}}</small></p>
+                <footer class="blockquote-footer">via {{child_comment.user}} <cite title="Source Title">on
+                        {{comment.timestamp|timesince}} ago {% if request.user == child_comment.user %} |<a href="{{child_comment.get_delete_url}}">
+                            Delete</a> {% endif %} </cite></footer>
+            </blockquote>
+        </div>
+        {% endfor %}
+
+
+        <form action="" method="post">{% csrf_token %}
+            {% if request.user.is_authenticated %}
+            {{form|crispy}}
+            {% else %}
+            <h4>You should login to comment</h4>
+            {% endif %}
+            <input type="hidden" name="parent_id" value="{{comment.id}}">
+            <input type="submit" value="Reply">
+        </form>
+    </div>
+
+
+
+
+
+
+
+    {% endblock content %}

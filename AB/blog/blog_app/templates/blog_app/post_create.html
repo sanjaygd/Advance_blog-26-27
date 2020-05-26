@@ -1,0 +1,28 @@
+{% extends 'blog_app/base.html' %}
+
+{% load crispy_forms_tags %} <!--This is for crispy form-->
+
+{% block head_extra %}
+{{form.media}}
+<!-- Added in AD - 4 --->
+
+{% endblock head_extra %}
+
+{% block content %}
+<div class="row">
+<div class="col-sm-6">
+    <h1>Preview</h1>
+    <div class="content-preview">
+        <h3 id='preview_title'></h3>
+        <p id="preview_content"></p>
+    </div>
+</div>
+<div class="col-sm-6 offset-6" >
+    <h1>Form</h1>
+    <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+</div>
+{% endblock content %}
